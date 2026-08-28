@@ -1,0 +1,178 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Express Practice API",
+    "description": "API REST de práctica en Node.js y Express con endpoints de monitoreo de salud, métricas del sistema e información de la aplicación.",
+    "version": "1.0.0",
+    "contact": {
+      "name": "Dev Practice",
+      "url": "https://github.com/express-practice/health-info-api"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "Servidor de Desarrollo Local"
+    }
+  ],
+  "paths": {
+    "/api/v1/health": {
+      "get": {
+        "summary": "Estado de Salud y Métricas del Sistema",
+        "description": "Retorna el tiempo de actividad (uptime), uso de memoria RAM, información del procesador y estado del servidor.",
+        "operationId": "getHealth",
+        "responses": {
+          "200": {
+            "description": "Métricas de salud obtenidas exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/info": {
+      "get": {
+        "summary": "Información General de la Aplicación",
+        "description": "Retorna metadatos de la aplicación, ambiente de ejecución y catálogo de rutas disponibles.",
+        "operationId": "getInfo",
+        "responses": {
+          "200": {
+            "description": "Información general obtenida exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/ping": {
+      "get": {
+        "summary": "Verificación Rápida de Latencia (Ping)",
+        "description": "Endpoint ultraligero que responde con mensaje 'pong' y marca de tiempo.",
+        "operationId": "getPing",
+        "responses": {
+          "200": {
+            "description": "Respuesta pong recibida exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PingResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "HealthResponse": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "example": true },
+          "data": {
+            "type": "object",
+            "properties": {
+              "status": { "type": "string", "example": "OK" },
+              "service": { "type": "string", "example": "Express Practice API" },
+              "uptime": { "type": "string", "example": "01h 24m 12s" },
+              "uptimeSeconds": { "type": "integer", "example": 5052 },
+              "timestamp": { "type": "string", "format": "date-time", "example": "2026-08-28T18:14:56.613Z" },
+              "system": {
+                "type": "object",
+                "properties": {
+                  "platform": { "type": "string", "example": "linux" },
+                  "arch": { "type": "string", "example": "x64" },
+                  "nodeVersion": { "type": "string", "example": "v24.19.0" },
+                  "cpuCores": { "type": "integer", "example": 12 },
+                  "freeMemoryMB": { "type": "integer", "example": 6879 },
+                  "totalMemoryMB": { "type": "integer", "example": 15227 }
+                }
+              },
+              "processMemory": {
+                "type": "object",
+                "properties": {
+                  "rssMB": { "type": "string", "example": "69.16" },
+                  "heapTotalMB": { "type": "string", "example": "17.00" },
+                  "heapUsedMB": { "type": "string", "example": "8.63" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "InfoResponse": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "example": true },
+          "data": {
+            "type": "object",
+            "properties": {
+              "application": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string", "example": "express-health-info-api" },
+                  "version": { "type": "string", "example": "1.0.0" },
+                  "description": { "type": "string", "example": "API REST de práctica" },
+                  "environment": { "type": "string", "example": "development" }
+                }
+              },
+              "maintainer": {
+                "type": "object",
+                "properties": {
+                  "team": { "type": "string", "example": "Dev Practice" },
+                  "repository": { "type": "string", "example": "https://github.com/express-practice/health-info-api" }
+                }
+              },
+              "endpoints": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "path": { "type": "string", "example": "/api/v1/health" },
+                    "method": { "type": "string", "example": "GET" },
+                    "description": { "type": "string", "example": "Obtiene el estado de salud" }
+                  }
+                }
+              },
+              "timestamp": { "type": "string", "format": "date-time", "example": "2026-08-28T18:14:56.628Z" }
+            }
+          }
+        }
+      },
+      "PingResponse": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "example": true },
+          "message": { "type": "string", "example": "pong" },
+          "timestamp": { "type": "string", "format": "date-time", "example": "2026-08-28T18:14:56.641Z" }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "example": false },
+          "error": {
+            "type": "object",
+            "properties": {
+              "code": { "type": "string", "example": "NOT_FOUND" },
+              "message": { "type": "string", "example": "La ruta solicitada no existe." },
+              "suggestion": { "type": "string", "example": "Revisa /api/v1/info para ver los endpoints disponibles." }
+            }
+          },
+          "timestamp": { "type": "string", "format": "date-time" }
+        }
+      }
+    }
+  }
+}

@@ -17,6 +17,15 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(requestLogger);
 
+// Servir especificaciones OpenAPI (JSON y YAML)
+app.get('/openapi.json', (req, res) => {
+  res.sendFile(path.join(__dirname, '../openapi.json'));
+});
+app.get('/openapi.yaml', (req, res) => {
+  res.setHeader('Content-Type', 'text/yaml');
+  res.sendFile(path.join(__dirname, '../openapi.yaml'));
+});
+
 // Servir dashboard interactivo desde la carpeta public/
 app.use(express.static(path.join(__dirname, '../public')));
 
