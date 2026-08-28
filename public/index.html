@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Express Practice API - Developer Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-primary: #0f172a;
+      --bg-card: rgba(30, 41, 59, 0.7);
+      --bg-card-hover: rgba(51, 65, 85, 0.8);
+      --accent-blue: #38bdf8;
+      --accent-green: #4ade80;
+      --accent-purple: #c084fc;
+      --accent-red: #f87171;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --border-color: rgba(255, 255, 255, 0.1);
+      --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-primary);
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(56, 189, 248, 0.12) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(192, 132, 252, 0.12) 0px, transparent 50%);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      padding: 1.5rem 2rem;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      backdrop-filter: blur(12px);
+      background: rgba(15, 23, 42, 0.6);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .brand-icon {
+      width: 38px;
+      height: 38px;
+      background: linear-gradient(135deg, #0ea5e9, #6366f1);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1.2rem;
+      box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
+    }
+
+    .brand-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .status-badge {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(74, 222, 128, 0.1);
+      border: 1px solid rgba(74, 222, 128, 0.3);
+      color: var(--accent-green);
+      padding: 0.4rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      background-color: var(--accent-green);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--accent-green);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.85); }
+    }
+
+    main {
+      flex: 1;
+      max-width: 1200px;
+      margin: 2rem auto;
+      width: 90%;
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 1.5rem;
+    }
+
+    @media (max-width: 868px) {
+      main {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card {
+      background: var(--bg-card);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 1.5rem;
+      box-shadow: var(--glass-shadow);
+    }
+
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--text-main);
+    }
+
+    .endpoint-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .endpoint-item {
+      background: rgba(15, 23, 42, 0.5);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .endpoint-item:hover {
+      border-color: var(--accent-blue);
+      transform: translateY(-2px);
+      background: var(--bg-card-hover);
+    }
+
+    .endpoint-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .method {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.25rem 0.5rem;
+      border-radius: 6px;
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--accent-blue);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+
+    .path {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    .btn-test {
+      margin-top: 0.25rem;
+      align-self: flex-end;
+      background: linear-gradient(135deg, #0284c7, #4f46e5);
+      color: white;
+      border: none;
+      padding: 0.4rem 0.9rem;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-test:hover {
+      opacity: 0.9;
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.4);
+    }
+
+    .response-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+
+    .status-code {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.85rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 6px;
+      font-weight: 600;
+    }
+
+    .status-200 {
+      background: rgba(74, 222, 128, 0.15);
+      color: var(--accent-green);
+      border: 1px solid rgba(74, 222, 128, 0.3);
+    }
+
+    .status-404 {
+      background: rgba(248, 113, 113, 0.15);
+      color: var(--accent-red);
+      border: 1px solid rgba(248, 113, 113, 0.3);
+    }
+
+    pre {
+      background: #090d16;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.25rem;
+      overflow-x: auto;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.85rem;
+      line-height: 1.6;
+      max-height: 450px;
+      color: #e2e8f0;
+    }
+
+    .curl-box {
+      margin-top: 1rem;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 0.75rem 1rem;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.8rem;
+      color: var(--accent-purple);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .copy-btn {
+      background: transparent;
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      padding: 0.25rem 0.5rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.75rem;
+      transition: all 0.2s ease;
+    }
+
+    .copy-btn:hover {
+      color: var(--text-main);
+      border-color: var(--accent-blue);
+    }
+
+    footer {
+      text-align: center;
+      padding: 1.5rem;
+      border-top: 1px solid var(--border-color);
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="brand">
+      <div class="brand-icon">⚡</div>
+      <div class="brand-title">Express Practice API</div>
+    </div>
+    <div class="status-badge" id="online-status">
+      <div class="dot"></div>
+      <span id="status-text">Servidor Online</span>
+    </div>
+  </header>
+
+  <main>
+    <!-- Left Column: Endpoints catalog -->
+    <section class="card">
+      <div class="card-title">🚀 Endpoints Disponibles</div>
+      <div class="endpoint-list">
+        
+        <div class="endpoint-item" onclick="testEndpoint('/api/v1/health')">
+          <div class="endpoint-header">
+            <span class="method">GET</span>
+            <span class="path">/api/v1/health</span>
+          </div>
+          <p class="desc">Retorna métricas de salud, uso de memoria, tiempo de actividad (uptime) y datos del sistema.</p>
+          <button class="btn-test">Probar /health</button>
+        </div>
+
+        <div class="endpoint-item" onclick="testEndpoint('/api/v1/info')">
+          <div class="endpoint-header">
+            <span class="method">GET</span>
+            <span class="path">/api/v1/info</span>
+          </div>
+          <p class="desc">Retorna metadatos de la aplicación, ambiente de ejecución y lista de rutas habilitadas.</p>
+          <button class="btn-test">Probar /info</button>
+        </div>
+
+        <div class="endpoint-item" onclick="testEndpoint('/api/v1/ping')">
+          <div class="endpoint-header">
+            <span class="method">GET</span>
+            <span class="path">/api/v1/ping</span>
+          </div>
+          <p class="desc">Endpoint ultraligero para comprobación de latencia ("pong").</p>
+          <button class="btn-test">Probar /ping</button>
+        </div>
+
+        <div class="endpoint-item" onclick="testEndpoint('/api/v1/ruta-inexistente')">
+          <div class="endpoint-header">
+            <span class="method" style="background: rgba(248, 113, 113, 0.15); color: var(--accent-red); border-color: rgba(248, 113, 113, 0.3);">404</span>
+            <span class="path">/api/v1/no-existe</span>
+          </div>
+          <p class="desc">Prueba el middleware de manejo de errores 404 Not Found.</p>
+          <button class="btn-test" style="background: linear-gradient(135deg, #dc2626, #9333ea);">Probar 404 Error</button>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Right Column: Interactive Response Viewer -->
+    <section class="card">
+      <div class="response-header">
+        <div class="card-title" style="margin-bottom: 0;">📡 Consola de Respuesta</div>
+        <span id="status-code" class="status-code status-200">HTTP 200 OK</span>
+      </div>
+      
+      <pre><code id="json-viewer">// Selecciona un endpoint de la izquierda para ejecutar una solicitud HTTP live.</code></pre>
+
+      <div class="curl-box">
+        <span id="curl-cmd">curl -i http://localhost:3000/api/v1/health</span>
+        <button class="copy-btn" onclick="copyCurl()">Copiar cURL</button>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    Express REST API Practice Project &bull; Diseñado con Node.js & Express
+  </footer>
+
+  <script>
+    async function testEndpoint(path) {
+      const viewer = document.getElementById('json-viewer');
+      const statusCode = document.getElementById('status-code');
+      const curlCmd = document.getElementById('curl-cmd');
+
+      const fullUrl = window.location.origin + path;
+      curlCmd.textContent = `curl -i ${fullUrl}`;
+      viewer.textContent = 'Cargando respuesta...';
+
+      try {
+        const startTime = performance.now();
+        const response = await fetch(path);
+        const duration = (performance.now() - startTime).toFixed(1);
+        const data = await response.json();
+
+        statusCode.textContent = `HTTP ${response.status} ${response.statusText} (${duration}ms)`;
+        statusCode.className = `status-code ${response.ok ? 'status-200' : 'status-404'}`;
+
+        viewer.textContent = JSON.stringify(data, null, 2);
+      } catch (err) {
+        statusCode.textContent = 'HTTP ERROR';
+        statusCode.className = 'status-code status-404';
+        viewer.textContent = JSON.stringify({ error: err.message }, null, 2);
+      }
+    }
+
+    function copyCurl() {
+      const curlText = document.getElementById('curl-cmd').textContent;
+      navigator.clipboard.writeText(curlText);
+      alert('¡Comando cURL copiado al portapapeles!');
+    }
+
+    // Auto-ejecutar /health al cargar la página
+    window.addEventListener('DOMContentLoaded', () => {
+      testEndpoint('/api/v1/health');
+    });
+  </script>
+</body>
+</html>
