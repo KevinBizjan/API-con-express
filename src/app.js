@@ -1,6 +1,7 @@
 import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { apiReference } from '@scalar/express-api-reference';
 
 import { requestLogger } from './middleware/logger.js';
 import { notFoundHandler, errorHandler } from './middleware/errorHandler.js';
@@ -25,6 +26,17 @@ app.get('/openapi.yaml', (req, res) => {
   res.setHeader('Content-Type', 'text/yaml');
   res.sendFile(path.join(__dirname, '../openapi.yaml'));
 });
+
+// Documentación de API interactiva con Scalar UI en /docs
+app.use(
+  '/docs',
+  apiReference({
+    theme: 'purple',
+    spec: {
+      url: '/openapi.json',
+    },
+  })
+);
 
 // Servir dashboard interactivo desde la carpeta public/
 app.use(express.static(path.join(__dirname, '../public')));

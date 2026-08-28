@@ -19,6 +19,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "@scalar/express-api-reference": "^0.10.17",
     "dotenv": "^16.4.5",
     "express": "^4.19.2"
   }
