@@ -1,5 +1,8 @@
 # 🚀 Express Practice REST API (`/health` & `/info`)
 
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/e9a67c53a01f44d39ec92116ea92a132)](https://app.codacy.com/gh/KevinBizjan/API-con-express/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
+
+
 Proyecto de práctica de **API REST** construida con **Node.js** y **Express** (sintaxis ES Modules). Incluye endpoints de monitoreo de salud (`/health`), información (`/info`), registro de solicitudes (logging), manejo estructurado de errores y un **Dashboard Web Interactivo** para probar las llamadas en tiempo real desde el navegador.
 
 ---
@@ -88,4 +91,3 @@ Proyecto de práctica de **API REST** construida con **Node.js** y **Express** (
 2. **Añadir validación**: Agrega un middleware para validar headers (ej. `x-api-key`).
 3. **Persistencia de datos**: Conecta la API a una base de datos como SQLite, PostgreSQL o MongoDB.
 
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/e9a67c53a01f44d39ec92116ea92a132)](https://app.codacy.com/gh/KevinBizjan/API-con-express/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
