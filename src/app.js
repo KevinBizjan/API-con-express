@@ -7,6 +7,7 @@ import { requestLogger } from './middleware/logger.js';
 import { notFoundHandler, errorHandler } from './middleware/errorHandler.js';
 import healthRoutes from './routes/health.routes.js';
 import infoRoutes from './routes/info.routes.js';
+import reservaRoutes from './routes/reserva.routes.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -44,6 +45,7 @@ app.use(express.static(path.join(__dirname, '../public')));
 // Rutas de la API v1
 app.use('/api/v1', healthRoutes);
 app.use('/api/v1', infoRoutes);
+app.use('/api/v1', reservaRoutes);
 
 // Alias directo para comodidad de consulta (/health e /info)
 app.use('/', healthRoutes);
