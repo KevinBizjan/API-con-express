@@ -27,3 +27,5 @@ curl -s -o /dev/null -w "Solicitud 2 -> HTTP %{http_code}\n" -X POST "$BASE_URL/
 wait
 
 echo "Resultado: Una obtuvo 200 OK y la otra 409 Conflict."
+
+# curl -X POST "http://localhost:3000/api/v1/reset"
